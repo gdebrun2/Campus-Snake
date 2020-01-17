@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Campus Snake 125</string>
+    <string name="service_name">Campus Snake 125 Location Observer</string>
+    <string name="ongoing_games">Ongoing Games</string>
+    <string name="create_game">Create Game</string>
+    <string name="game_mode">Game mode</string>
+    <string name="target_mode">Target (specific locations)</string>
+    <string name="area_mode">Area (grid)</string>
+    <string name="targets">Targets</string>
+    <string name="proximity_threshold">Proximity threshold (meters)</string>
+    <string name="area">Area</string>
+    <string name="area_instructions">Pan and zoom the map to set the area.</string>
+    <string name="cell_size">Cell length (meters)</string>
+    <string name="finish">Finish</string>
+    <string name="create_game_instructions">After setting up the game, press Create to start playing.</string>
+    <string name="create">Create</string>
+    <string name="notification_text">Tracking location because you\'re in a game</string>
+    <string-array name="team_choices">
+        <item>Observer</item>
+        <item>Red</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Blue</item>
+    </string-array>
+</resources>
