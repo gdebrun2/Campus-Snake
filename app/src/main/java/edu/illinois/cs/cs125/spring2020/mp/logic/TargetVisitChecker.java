@@ -66,8 +66,11 @@ public class TargetVisitChecker {
                                               final int range) {
         // HINT: To find the distance in meters between two locations, use a provided helper function:
         // LatLngUtils.distance(oneLatitude, oneLongitude, otherLatitude, otherLongitude)
-        return false;
-    }
+        if (LatLngUtils.distance(currentLatitude, currentLongitude, latitudes[targetIndex], longitudes[targetIndex]) > range) {
+            return false;
+        } else {
+            return true;
+        }
 
     /**
      * Determines whether a target is already visited.
