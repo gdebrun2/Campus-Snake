@@ -86,7 +86,13 @@ public class TargetVisitChecker {
      */
     public static boolean isTargetVisited(final int[] path, final int targetIndex) {
         // HINT: The user can capture targets in many different orders. Target #0 is not necessarily captured first.
-        return false;
+            if (path[targetIndex] != -1) {
+                return true;
+            } else {
+                return false;
+            }
+
+        }
     }
 
     /**
