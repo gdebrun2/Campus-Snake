@@ -39,7 +39,7 @@ public class TargetVisitChecker {
     /**
      * Tag for logging. This allows you to use Android's logging feature like so:
      * Log.i(TAG, "Your log message");
-     *
+     * <p>
      * Alternatively you can use the standard System.out.println - up to you.
      */
     private static final String TAG = "TargetVisitChecker";
@@ -52,12 +52,13 @@ public class TargetVisitChecker {
      * All coordinates are valid. The range is positive.
      * <p>
      * This function should not modify the arrays it receives.
-     * @param latitudes the latitudes of all targets in the game
-     * @param longitudes the longitudes of all targets in the game (same order as latitudes)
-     * @param targetIndex the index (into the coordinate arrays) of the target to check for proximity
-     * @param currentLatitude the player's current latitude
+     *
+     * @param latitudes        the latitudes of all targets in the game
+     * @param longitudes       the longitudes of all targets in the game (same order as latitudes)
+     * @param targetIndex      the index (into the coordinate arrays) of the target to check for proximity
+     * @param currentLatitude  the player's current latitude
      * @param currentLongitude the player's current longitude
-     * @param range the proximity threshold
+     * @param range            the proximity threshold
      * @return whether the target at the specified index is within range of the current location
      */
     public static boolean isTargetWithinRange(final double[] latitudes, final double[] longitudes,
@@ -71,6 +72,7 @@ public class TargetVisitChecker {
         } else {
             return true;
         }
+    }
 
     /**
      * Determines whether a target is already visited.
@@ -80,19 +82,20 @@ public class TargetVisitChecker {
      * <p>
      * It is assumed that the index is valid and path is non-null.
      * This function should not modify the array it receives.
-     * @param path indexes of targets visited so far, in the order they were visited (-1 for empty slots)
+     *
+     * @param path        indexes of targets visited so far, in the order they were visited (-1 for empty slots)
      * @param targetIndex the index of the target to check for visitedness
      * @return whether the specified target is already visited
      */
     public static boolean isTargetVisited(final int[] path, final int targetIndex) {
         // HINT: The user can capture targets in many different orders. Target #0 is not necessarily captured first.
-            if (path[targetIndex] != -1) {
-                return true;
-            } else {
-                return false;
-            }
+       for (int index = 0; index < path.length; index++) {
+           if (targetIndex == path[index]) {
+               return true;
+           }
+       }
+       return false;
 
-        }
     }
 
     /**
@@ -104,12 +107,13 @@ public class TargetVisitChecker {
      * All coordinates are valid. The range is positive.
      * <p>
      * This function should not modify the arrays it receives.
-     * @param latitudes the latitudes of all targets
-     * @param longitudes the longitudes of all targets (same order as latitudes)
-     * @param path indexes of targets visited so far (same size as latitudes, -1 for empty slots)
-     * @param currentLatitude the current latitude
+     *
+     * @param latitudes        the latitudes of all targets
+     * @param longitudes       the longitudes of all targets (same order as latitudes)
+     * @param path             indexes of targets visited so far (same size as latitudes, -1 for empty slots)
+     * @param currentLatitude  the current latitude
      * @param currentLongitude the current longitude
-     * @param range maximum distance to target, in meters
+     * @param range            maximum distance to target, in meters
      * @return the index of a target within the range that is not on the path, or -1 if no such target exists
      */
     public static int getVisitCandidate(final double[] latitudes, final double[] longitudes, final int[] path,
@@ -117,6 +121,14 @@ public class TargetVisitChecker {
                                         final int range) {
         // HINT: Implement isTargetWithinRange and isTargetVisited (above) first.
         // Then you can call them in this function.
+        for (int index = 0; index < path.length; index++) {
+            if (isTargetWithinRange(latitudes, longitudes, index, currentLatitude, currentLongitude, range) == true) {
+                if (isTargetVisited(path, index) == false) {
+                    return index;
+                }
+            }
+
+        }
         return -1;
     }
 
@@ -136,10 +148,11 @@ public class TargetVisitChecker {
      * been visited yet). No existing lines violate the snake rule.
      * <p>
      * This function should not modify the arrays it receives.
-     * @param latitudes latitudes of all targets
+     *
+     * @param latitudes  latitudes of all targets
      * @param longitudes longitudes of all targets (same order as latitudes)
-     * @param path indexes of targets visited so far (same size as latitudes, -1 for empty slots)
-     * @param tryVisit index of the target to try to visit
+     * @param path       indexes of targets visited so far (same size as latitudes, -1 for empty slots)
+     * @param tryVisit   index of the target to try to visit
      * @return whether the target can be claimed
      */
     public static boolean checkSnakeRule(final double[] latitudes, final double[] longitudes,
@@ -155,7 +168,8 @@ public class TargetVisitChecker {
      * <p>
      * It is assumed that all parameters are valid. The path array is non-null and does not yet contain
      * the target index. The target index is non-negative.
-     * @param path the path array
+     *
+     * @param path        the path array
      * @param targetIndex the target being visited
      * @return the index in the path array that was updated, or -1 if the path array was full
      */
