@@ -89,12 +89,12 @@ public class TargetVisitChecker {
      */
     public static boolean isTargetVisited(final int[] path, final int targetIndex) {
         // HINT: The user can capture targets in many different orders. Target #0 is not necessarily captured first.
-       for (int index = 0; index < path.length; index++) {
-           if (targetIndex == path[index]) {
-               return true;
-           }
-       }
-       return false;
+        for (int index = 0; index < path.length; index++) {
+            if (targetIndex == path[index]) {
+                return true;
+            }
+        }
+        return false;
 
     }
 
@@ -160,7 +160,18 @@ public class TargetVisitChecker {
         // HINT: To determine whether two lines cross, use a provided helper function:
         // LineCrossDetector.linesCross(oneStartLat, oneStartLng, oneEndLat, oneEndLng,
         //                              otherStartLat, otherStartLng, otherEndLat, otherEndLng)
+        int finalindex = 0;
+        while (path[finalindex] != -1) {
+            finalindex += 1;
+        }
+        for (int index = 0; index < finalindex - 1; index++) {
+            if (LineCrossDetector.linesCross(latitudes[path[finalindex - 1]], longitudes[path[finalindex - 1]], latitudes[tryVisit], longitudes[tryVisit], latitudes[path[index]],
+                    longitudes[path[index]], latitudes[path[index + 1]], longitudes[path[index + 1]]) == true) {
+                return false;
+            }
+        }
         return true;
+
     }
 
     /**
