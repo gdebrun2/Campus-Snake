@@ -67,12 +67,14 @@ public class TargetVisitChecker {
                                               final int range) {
         // HINT: To find the distance in meters between two locations, use a provided helper function:
         // LatLngUtils.distance(oneLatitude, oneLongitude, otherLatitude, otherLongitude)
-        if (LatLngUtils.distance(currentLatitude, currentLongitude, latitudes[targetIndex], longitudes[targetIndex]) > range) {
+        if (LatLngUtils.distance(currentLatitude, currentLongitude,
+                latitudes[targetIndex], longitudes[targetIndex]) > range) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     }
+
+
 
     /**
      * Determines whether a target is already visited.
@@ -165,7 +167,8 @@ public class TargetVisitChecker {
             finalindex += 1;
         }
         for (int index = 0; index < finalindex - 1; index++) {
-            if (LineCrossDetector.linesCross(latitudes[path[finalindex - 1]], longitudes[path[finalindex - 1]], latitudes[tryVisit], longitudes[tryVisit], latitudes[path[index]],
+            if (LineCrossDetector.linesCross(latitudes[path[finalindex - 1]], longitudes[path[finalindex - 1]],
+                    latitudes[tryVisit], longitudes[tryVisit], latitudes[path[index]],
                     longitudes[path[index]], latitudes[path[index + 1]], longitudes[path[index + 1]]) == true) {
                 return false;
             }
