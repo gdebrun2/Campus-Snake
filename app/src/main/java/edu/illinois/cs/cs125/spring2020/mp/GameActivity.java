@@ -185,6 +185,10 @@ public final class GameActivity extends AppCompatActivity {
 
         // Use the provided placeMarker function to add a marker at every target's location
         // HINT: onCreate initializes the relevant arrays (targetLats, targetLngs) for you
+        for (int i = 0; i < targetLats.length; i++) {
+            placeMarker(targetLats[i], targetLngs[i]);
+        }
+
     }
 
     /**
@@ -206,8 +210,8 @@ public final class GameActivity extends AppCompatActivity {
         // Sequential captures should create green connecting lines on the map
         // HINT: Use the provided changeMarkerColor and addLine functions to manipulate the map
         // HINT: Use the provided color constants near the top of this file as arguments to those functions
-    }
 
+    }
     /**
      * Places a marker on the map at the specified coordinates.
      * @param latitude the marker's latitude
