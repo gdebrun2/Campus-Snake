@@ -75,7 +75,6 @@ public class TargetVisitChecker {
     }
 
 
-
     /**
      * Determines whether a target is already visited.
      * Once this is done, you can use it to implement getVisitCandidate.
@@ -188,9 +187,16 @@ public class TargetVisitChecker {
      * @return the index in the path array that was updated, or -1 if the path array was full
      */
     public static int visitTarget(final int[] path, final int targetIndex) {
-        return -1;
         // HINT: The return value of this function will be useful in GameActivity.
+        int finalIndex = -1;
+        for (int i = 0; i < path.length; i++) {
+            if (path[i] == -1) {
+                path[i] = targetIndex;
+                finalIndex = i;
+                break;
+            }
+        }
+        return finalIndex;
     }
-
 }
 
