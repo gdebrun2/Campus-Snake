@@ -36,6 +36,7 @@ import java.util.List;
 
 import edu.illinois.cs.cs125.spring2020.mp.logic.DefaultTargets;
 import edu.illinois.cs.cs125.spring2020.mp.logic.LatLngUtils;
+import edu.illinois.cs.cs125.spring2020.mp.logic.TargetVisitChecker;
 
 /*
  * Welcome to the Machine Project app!
@@ -210,6 +211,24 @@ public final class GameActivity extends AppCompatActivity {
         // Sequential captures should create green connecting lines on the map
         // HINT: Use the provided changeMarkerColor and addLine functions to manipulate the map
         // HINT: Use the provided color constants near the top of this file as arguments to those functions
+        int targetCandidate = TargetVisitChecker.getVisitCandidate(targetLats, targetLngs, path,
+                latitude, longitude, PROXIMITY_THRESHOLD);
+        if (targetCandidate != -1 && path[0] != -1) {
+            int finalindex = 0;
+            while (path[finalindex] != -1) {
+                finalindex += 1;
+            }
+            finalindex--;
+            if (TargetVisitChecker.checkSnakeRule(targetLats, targetLngs, path, targetCandidate)) {
+                TargetVisitChecker.visitTarget(path, targetCandidate);
+                changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
+                addLine(targetLats[path[finalindex]], targetLngs[path[finalindex]], targetLats[targetCandidate],
+                        targetLngs[targetCandidate], PLAYER_COLOR);
+            }
+        } else if (targetCandidate != -1) {
+            TargetVisitChecker.visitTarget(path, targetCandidate);
+            changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
+        }
 
     }
     /**
