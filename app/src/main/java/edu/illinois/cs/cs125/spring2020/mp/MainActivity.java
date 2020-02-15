@@ -16,21 +16,16 @@ public final class MainActivity extends AppCompatActivity {
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-        // This "super" call is required for all activities
+        // The super.onCreate call is required for all activities
         super.onCreate(savedInstanceState);
-        // Create the UI from a layout resource
+        // Set up the UI from the activity_main.xml layout resource
         setContentView(R.layout.activity_main);
         // Now that setContentView has been called, findViewById can find views
 
-        // This activity doesn't do anything yet - it immediately launches the game activity
-        // It will be changed a little in Checkpoint 1 and filled out in Checkpoint 2
-
-        // Intents are Android's way of specifying what to do/launch
-        // Here we create an Intent for launching GameActivity and act on it with startActivity
-        startActivity(new Intent(this, GameActivity.class));
-        // End this activity so that it's removed from the history
-        // Otherwise pressing the back button in the game would come back to a blank screen here
-        finish();
+        findViewById(R.id.createGame).setOnClickListener(unused -> startActivity(
+                new Intent(this, NewGameActivity.class)));
     }
+
+    // This activity doesn't do much now - it'll be filled out in Checkpoint 2
 
 }
