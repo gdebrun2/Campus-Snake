@@ -54,7 +54,7 @@ public class AreaDivider {
     public final int getXCells() {
         double xDistance = LatLngUtils.distance(north, east, north, west);
         double numberOfXCells = xDistance / cellSize;
-        return (int) numberOfXCells;
+        return (int) Math.ceil(numberOfXCells);
     }
 
     /**
@@ -64,7 +64,7 @@ public class AreaDivider {
     public final int getYCells() {
         double yDistance = LatLngUtils.distance(north, east, south, east);
         double numberOfYCells = yDistance / cellSize;
-        return (int) numberOfYCells;
+        return (int) Math.ceil(numberOfYCells);
     }
 
     /**
