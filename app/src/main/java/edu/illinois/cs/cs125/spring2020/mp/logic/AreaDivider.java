@@ -1,5 +1,6 @@
 package edu.illinois.cs.cs125.spring2020.mp.logic;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 /**
@@ -92,7 +93,18 @@ public class AreaDivider {
      * @return the boundaries of the cell.
      */
     public final LatLngBounds getCellBounds(final int x, final int y) {
-        return null;
+        double totalLng = east - west;
+        double lngCell = totalLng / getXCells();
+        double southwestLng = west + x * lngCell;
+        double northeastLng = west + x * lngCell + lngCell;
+        double totalLat = north - south;
+        double latCell = totalLat / getYCells();
+        double southwestLat = south + y * latCell;
+        double northeastLat = south + y * latCell + latCell;
+        LatLng southwest = new LatLng(southwestLat, southwestLng);
+        LatLng northeast = new LatLng(northeastLat, northeastLng);
+        LatLngBounds cellBounds = new LatLngBounds(southwest, northeast);
+        return cellBounds;
     }
 
     /**
