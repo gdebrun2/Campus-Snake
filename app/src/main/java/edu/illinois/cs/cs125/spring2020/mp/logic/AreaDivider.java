@@ -112,6 +112,13 @@ public class AreaDivider {
      * @return whether this AreaDivider can divide a valid area.
      */
     public final boolean isValid() {
+        if (north <= south) {
+            return false;
+        } else if (east <= west) {
+            return false;
+        } else if (cellSize <= 0) {
+            return false;
+        }
         return true;
     }
 
