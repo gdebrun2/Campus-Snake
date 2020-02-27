@@ -13,12 +13,58 @@
         android:orientation="vertical" >
 
         <LinearLayout
+            android:id="@+id/loadGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="10dp">
+
+            <ProgressBar
+                android:id="@+id/progressSpinner"
+                style="?android:attr/progressBarStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <Button
+                android:id="@+id/retryConnectButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/retry_connection"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/invitationsGroup"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            tools:visibility="visible">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/invitations"
+                android:textColor="@color/colorText"
+                android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/invitationsList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical" />
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/ongoingGamesGroup"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:orientation="vertical"
+            android:visibility="gone"
             tools:visibility="visible">
 
             <TextView
@@ -27,6 +73,14 @@
                 android:text="@string/ongoing_games"
                 android:textColor="@color/colorText"
                 android:textSize="18sp" />
+
+            <LinearLayout
+                android:id="@+id/ongoingGamesList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            </LinearLayout>
 
             <Button
                 android:id="@+id/createGame"
