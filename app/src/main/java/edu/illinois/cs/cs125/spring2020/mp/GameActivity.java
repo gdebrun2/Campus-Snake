@@ -104,6 +104,11 @@ public final class GameActivity extends AppCompatActivity {
     /** The sequence of target indexes captured by the player (-1 if none). */
     private int[] path;
 
+    /** What the fuck does this do???
+     * fdsfdsa.
+     */
+    private int proximity;
+
     /**
      * Called by the Android system when the activity is to be set up.
      * <p>
@@ -211,8 +216,10 @@ public final class GameActivity extends AppCompatActivity {
         // Sequential captures should create green connecting lines on the map
         // HINT: Use the provided changeMarkerColor and addLine functions to manipulate the map
         // HINT: Use the provided color constants near the top of this file as arguments to those functions
+        Intent intent = getIntent();
+        proximity = intent.getIntExtra("proximityThreshold", 0);
         int targetCandidate = TargetVisitChecker.getVisitCandidate(targetLats, targetLngs, path,
-                latitude, longitude, PROXIMITY_THRESHOLD);
+                latitude, longitude, proximity);
         if (targetCandidate != -1 && path[0] != -1) {
             int finalindex = 0;
             while (path[finalindex] != -1) {

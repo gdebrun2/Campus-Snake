@@ -1,7 +1,11 @@
 package edu.illinois.cs.cs125.spring2020.mp.logic;
 
+import android.graphics.Color;
+
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 /**
  * Creates an AreaDivider for an area.
@@ -74,7 +78,19 @@ public class AreaDivider {
      * @return the X coordinate of the cell containing the lat-long point.
      */
     public final int getXIndex(final com.google.android.gms.maps.model.LatLng location) {
-        return -1;
+        double lng = location.longitude;
+        int xindex;
+        double cellWidth;
+        double gridWidth = LatLngUtils.distance(north, east, north, west);
+        if (lng <= east && lng >= west) {
+            double xdistance = LatLngUtils.distance(north, lng, north, west);
+            cellWidth = gridWidth / getXCells();
+            xindex = (int) (xdistance / cellWidth);
+            return xindex;
+        } else {
+            return -1;
+        }
+
     }
 
     /**
@@ -83,7 +99,19 @@ public class AreaDivider {
      * @return the Y coordinate of the cell containing the lat-long point.
      */
     public final int getYIndex(final com.google.android.gms.maps.model.LatLng location) {
-        return -1;
+        double lat = location.latitude;
+        int yindex;
+        double cellHeight;
+        double gridHeight = LatLngUtils.distance(north, east, south, east);
+        if (lat <= north && lat >= south) {
+            double ydistance = LatLngUtils.distance(lat, east, south, east);
+            cellHeight = gridHeight / getYCells();
+            yindex = (int) (ydistance / cellHeight);
+            return yindex;
+        } else {
+            return -1;
+        }
+
     }
 
     /**
@@ -126,7 +154,23 @@ public class AreaDivider {
      * Draws the grid to a map using solid black polylines.
      * @param map the Google map to draw on.
      */
-    public final void renderGrid(final com.google.android.gms.maps.GoogleMap map) {
+    public final void renderGrid(final GoogleMap map) {
+        double gridWidthLng = east - west;
+        double cellLng = gridWidthLng / getXCells();
+        for (int i = 0; i <= getXCells(); i++) {
+            LatLng start = new LatLng(south, i * cellLng + west);
+            LatLng end = new LatLng(north, i * cellLng + west);
+            PolylineOptions fill = new PolylineOptions().add(start, end).color(Color.BLACK).width(1);
+            map.addPolyline(fill);
+        }
+        double gridHeightLat = north - south;
+        double cellLat = gridHeightLat / getYCells();
+        for (int i = 0; i <= getYCells(); i++) {
+            LatLng start = new LatLng(i * cellLat + south, west);
+            LatLng end = new LatLng(i * cellLat + south, east);
+            PolylineOptions fill = new PolylineOptions().add(start, end).color(Color.BLACK).width(1);
+            map.addPolyline(fill);
+        }
     }
 
 }
