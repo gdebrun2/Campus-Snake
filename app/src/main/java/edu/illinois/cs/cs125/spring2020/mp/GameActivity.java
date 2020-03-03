@@ -26,14 +26,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.PolygonOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import edu.illinois.cs.cs125.spring2020.mp.logic.AreaDivider;
 import edu.illinois.cs.cs125.spring2020.mp.logic.DefaultTargets;
 import edu.illinois.cs.cs125.spring2020.mp.logic.LatLngUtils;
 import edu.illinois.cs.cs125.spring2020.mp.logic.TargetVisitChecker;
@@ -110,6 +113,62 @@ public final class GameActivity extends AppCompatActivity {
     private int proximity;
 
     /**
+     * .
+     */
+    private String mode;
+
+    /**
+     *.
+     */
+    private int cellSize;
+
+    /**
+     * .
+     */
+    private double areaNorth;
+    /**
+     * .
+     */
+    private double areaSouth;
+    /**
+     * .
+     */
+    private double areaEast;
+    /**
+     * .
+     */
+    private double areaWest;
+    /**
+     * .
+     */
+    private boolean[][] checkCaptured;
+    /**
+     * .
+     */
+    private AreaDivider theAreaDivider;
+    /**
+     * .
+     */
+    private Intent intent1;
+    /**
+     * .
+     */
+    private boolean temp = false;
+    /**
+     * .
+     */
+    private int proximityThreshold;
+    /**
+     * .
+     */
+    private int lastCapturedX;
+    /**
+     * .
+     */
+    private int lastCapturedY;
+
+
+    /**
      * Called by the Android system when the activity is to be set up.
      * <p>
      * Prepares the variables needed for gameplay. You do not need to modify this function
@@ -119,12 +178,60 @@ public final class GameActivity extends AppCompatActivity {
     @Override
     @SuppressWarnings("ConstantConditions")
     protected void onCreate(final Bundle savedInstanceState) {
+        intent1 = getIntent();
+        mode = intent1.getStringExtra("mode");
         // The super.onCreate call is required for all activities
         super.onCreate(savedInstanceState);
         // Load the UI from a layout resource
         setContentView(R.layout.activity_game);
         Log.v(TAG, "Created");
 
+        if (mode.equals("target")) {
+            // Load the predefined targets
+            targetLats = DefaultTargets.getLatitudes(this);
+            targetLngs = DefaultTargets.getLongitudes(this);
+            path = new int[targetLats.length];
+            Arrays.fill(path, -1); // No targets visited initially
+        } else if (mode.equals("area")) {
+            areaEast = intent1.getDoubleExtra("areaEast", 0.0);
+            areaWest = intent1.getDoubleExtra("areaWest", 0.0);
+            areaNorth = intent1.getDoubleExtra("areaNorth", 0.0);
+            areaSouth = intent1.getDoubleExtra("areaSouth", 0.0);
+            cellSize = intent1.getIntExtra("cellSize", 0);
+            theAreaDivider = new AreaDivider(areaNorth, areaEast, areaSouth, areaWest, cellSize);
+            checkCaptured = new boolean[theAreaDivider.getXCells()][theAreaDivider.getYCells()];
+        }
+
+        // Prepare a handler that will be called when location updates are available
+        locationUpdateReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(final Context context, final Intent intent) {
+                Location location = intent.getParcelableExtra(LocationListenerService.UPDATE_DATA_ID);
+                if (map != null && location != null && location.hasAccuracy()
+                        && location.getAccuracy() < REQUIRED_LOCATION_ACCURACY) {
+                    ensureMapCentered(location);
+                    onLocationUpdate(location.getLatitude(), location.getLongitude());
+                }
+            }
+        };
+
+
+        // Register (activate) it
+        LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdateReceiver,
+                new IntentFilter(LocationListenerService.UPDATE_ACTION));
+
+        // See if we still need the location permission
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // We don't have it yet - request it
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            Log.v(TAG, "Requested location permission");
+        } else {
+            // We do have it - activate the features that require location
+            Log.v(TAG, "Already had location permission");
+            hasLocationPermission = true;
+            startLocationWatching();
+        }
         // Load the predefined targets
         targetLats = DefaultTargets.getLatitudes(this);
         targetLngs = DefaultTargets.getLongitudes(this);
@@ -141,7 +248,6 @@ public final class GameActivity extends AppCompatActivity {
             map = view;
             setUpMap();
         });
-
         // Prepare a handler that will be called when location updates are available
         locationUpdateReceiver = new BroadcastReceiver() {
             @Override
@@ -154,6 +260,7 @@ public final class GameActivity extends AppCompatActivity {
                 }
             }
         };
+
         // Register (activate) it
         LocalBroadcastManager.getInstance(this).registerReceiver(locationUpdateReceiver,
                 new IntentFilter(LocationListenerService.UPDATE_ACTION));
@@ -162,7 +269,7 @@ public final class GameActivity extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             // We don't have it yet - request it
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 0);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 0);
             Log.v(TAG, "Requested location permission");
         } else {
             // We do have it - activate the features that require location
@@ -171,7 +278,6 @@ public final class GameActivity extends AppCompatActivity {
             startLocationWatching();
         }
     }
-
     /**
      * Sets up the Google map.
      * <p>
@@ -191,8 +297,12 @@ public final class GameActivity extends AppCompatActivity {
 
         // Use the provided placeMarker function to add a marker at every target's location
         // HINT: onCreate initializes the relevant arrays (targetLats, targetLngs) for you
-        for (int i = 0; i < targetLats.length; i++) {
-            placeMarker(targetLats[i], targetLngs[i]);
+        if (mode.equals("target")) {
+            for (int i = 0; i < targetLats.length; i++) {
+                placeMarker(targetLats[i], targetLngs[i]);
+            }
+        } else {
+            theAreaDivider.renderGrid(map);
         }
 
     }
@@ -218,23 +328,61 @@ public final class GameActivity extends AppCompatActivity {
         // HINT: Use the provided color constants near the top of this file as arguments to those functions
         Intent intent = getIntent();
         proximity = intent.getIntExtra("proximityThreshold", 0);
-        int targetCandidate = TargetVisitChecker.getVisitCandidate(targetLats, targetLngs, path,
-                latitude, longitude, proximity);
-        if (targetCandidate != -1 && path[0] != -1) {
-            int finalindex = 0;
-            while (path[finalindex] != -1) {
-                finalindex += 1;
-            }
-            finalindex--;
-            if (TargetVisitChecker.checkSnakeRule(targetLats, targetLngs, path, targetCandidate)) {
+        if (mode.equals("target")) {
+            int targetCandidate = TargetVisitChecker.getVisitCandidate(targetLats, targetLngs, path,
+                    latitude, longitude, proximity);
+            if (targetCandidate != -1 && path[0] != -1) {
+                int finalindex = 0;
+                while (path[finalindex] != -1) {
+                    finalindex += 1;
+                }
+                finalindex--;
+                if (TargetVisitChecker.checkSnakeRule(targetLats, targetLngs, path, targetCandidate)) {
+                    TargetVisitChecker.visitTarget(path, targetCandidate);
+                    changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
+                    addLine(targetLats[path[finalindex]], targetLngs[path[finalindex]], targetLats[targetCandidate],
+                            targetLngs[targetCandidate], PLAYER_COLOR);
+                }
+            } else if (targetCandidate != -1) {
                 TargetVisitChecker.visitTarget(path, targetCandidate);
                 changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
-                addLine(targetLats[path[finalindex]], targetLngs[path[finalindex]], targetLats[targetCandidate],
-                        targetLngs[targetCandidate], PLAYER_COLOR);
             }
-        } else if (targetCandidate != -1) {
-            TargetVisitChecker.visitTarget(path, targetCandidate);
-            changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
+        } else if (mode.equals("area")) {
+            LatLng position = new LatLng(latitude, longitude);
+            int currentX = theAreaDivider.getXIndex(position);
+            int currentY = theAreaDivider.getYIndex(position);
+            LatLngBounds square = theAreaDivider.getCellBounds(currentX, currentY);
+            LatLng sw1 = square.southwest;
+            LatLng ne2 = square.northeast;
+            LatLng nw3 = new LatLng(ne2.latitude, sw1.longitude);
+            LatLng se4 = new LatLng(sw1.latitude, ne2.longitude);
+            PolygonOptions newSquare = new PolygonOptions();
+            newSquare.add(sw1, nw3, ne2, se4).fillColor(PLAYER_COLOR);
+            for (int i = 0; i < checkCaptured.length; i++) {
+                for (int j = 0; j < checkCaptured[0].length; j++) {
+                    if (checkCaptured[i][j]) {
+                        temp = true;
+                    }
+                }
+            }
+            if (!temp) {
+                map.addPolygon(newSquare);
+                checkCaptured[currentX][currentY] = true;
+                lastCapturedX = currentX;
+                lastCapturedY = currentY;
+            } else {
+                if ((lastCapturedX == currentX + 1 && lastCapturedY == currentY
+                        || lastCapturedX == currentX - 1 && lastCapturedY == currentY
+                        || lastCapturedX == currentX && lastCapturedY == currentY + 1
+                        || lastCapturedX == currentX && lastCapturedY == currentY - 1)
+                        && currentX >= 0 && currentX < checkCaptured.length && currentY >= 0
+                        && currentY < checkCaptured[0].length && !checkCaptured[currentX][currentY]) {
+                    map.addPolygon(newSquare);
+                    checkCaptured[currentX][currentY] = true;
+                    lastCapturedX = currentX;
+                    lastCapturedY = currentY;
+                }
+            }
         }
 
     }
