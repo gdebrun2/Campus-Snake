@@ -106,7 +106,7 @@ gradlegrader {
             title = "UNOFFICIAL Grade Summary"
             notes = "On checkpoints with an early deadline, the maximum local score is 90/100. " +
                     "10 points will be provided during official grading if you submitted code " +
-                    "that earns at least 40 points by 8 PM on the early deadline day."
+                    "that earns at least 40 points by the end of the early deadline day."
         }
     }
     vcs {
