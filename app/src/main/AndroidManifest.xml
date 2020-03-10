@@ -15,17 +15,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-
-        <activity android:name="edu.illinois.cs.cs125.spring2020.mp.NewGameActivity" />
-        <activity android:name="edu.illinois.cs.cs125.spring2020.mp.GameActivity" />
-        <activity android:name="edu.illinois.cs.cs125.spring2020.mp.MainActivity">
+        <activity android:name=".LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".NewGameActivity" />
+        <activity android:name=".GameActivity" />
+        <activity android:name=".MainActivity">
 
-        <service android:name="edu.illinois.cs.cs125.spring2020.mp.LocationListenerService"
+        </activity>
+
+        <service
+            android:name=".LocationListenerService"
             android:description="@string/service_name"
             android:foregroundServiceType="location"
             tools:targetApi="q" />
@@ -36,7 +40,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyD_0Jc8by7UwSrQFYoQiBD5zScD9qwQ-lM" />
-
     </application>
 
 </manifest>
