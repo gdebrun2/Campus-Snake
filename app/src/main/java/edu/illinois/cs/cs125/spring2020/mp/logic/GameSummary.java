@@ -20,11 +20,14 @@ import static edu.illinois.cs.cs125.spring2020.mp.logic.TeamID.TEAM_YELLOW;
 **/
 public class GameSummary {
     /**
+     * .
+     */
+    private com.google.gson.JsonObject info;
+    /**
      * Creates a game summary from JSON from the server.
      *
      * @param infoFromServer one object from the array in the /games response.
      */
-    private com.google.gson.JsonObject info;
     public GameSummary(final com.google.gson.JsonObject infoFromServer) {
         info = infoFromServer;
 
@@ -109,8 +112,6 @@ public class GameSummary {
                     isInvited = i.getAsJsonObject().get("state").getAsInt();
                     if (isInvited == INVITED) {
                         return true;
-                    } else {
-                        return false;
                     }
                 }
             }
@@ -134,8 +135,6 @@ public class GameSummary {
                     return true;
                 } else if (ongoing.equals("3")) {
                     return true;
-                } else {
-                    return false;
                 }
             }
         }
