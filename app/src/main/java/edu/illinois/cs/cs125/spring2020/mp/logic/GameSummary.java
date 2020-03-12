@@ -23,6 +23,7 @@ public class GameSummary {
      * .
      */
     private com.google.gson.JsonObject info;
+
     /**
      * Creates a game summary from JSON from the server.
      *
@@ -35,6 +36,7 @@ public class GameSummary {
 
     /**
      * Gets the unique, server-assigned ID of this game.
+     *
      * @return the game ID.
      */
 
@@ -47,6 +49,7 @@ public class GameSummary {
 
     /**
      * Gets the mode of this game, either area or target.
+     *
      * @return the game mode.
      */
     public java.lang.String getMode() {
@@ -57,6 +60,7 @@ public class GameSummary {
 
     /**
      * Gets the owner/creator of this game.
+     *
      * @return the email of the game's owner.
      */
     public java.lang.String getOwner() {
@@ -67,8 +71,9 @@ public class GameSummary {
 
     /**
      * Gets the name of the user's team/role.
+     *
      * @param userEmail the logged-in user's email.
-     * @param context an Android context (for access to resources).
+     * @param context   an Android context (for access to resources).
      * @return the human-readable team/role name of the user in this game.
      */
     public java.lang.String getPlayerRole(final java.lang.String userEmail,
@@ -79,15 +84,15 @@ public class GameSummary {
             if (userEmail.equals(i.getAsJsonObject().get("email").getAsString())) {
                 playerRole = i.getAsJsonObject().get("team").getAsInt();
                 if (playerRole == 0) {
-                    return "OBSERVER";
+                    return "Observer";
                 } else if (playerRole == TEAM_RED) {
-                    return "TEAM_RED";
+                    return "Red";
                 } else if (playerRole == TEAM_YELLOW) {
-                    return "TEAM_YELLOW";
+                    return "Yellow";
                 } else if (playerRole == TEAM_GREEN) {
-                    return "TEAM_GREEN";
+                    return "Green";
                 } else if (playerRole == TEAM_BLUE) {
-                    return "TEAM_BLUE";
+                    return "Blue";
                 }
             }
         }
@@ -96,6 +101,7 @@ public class GameSummary {
 
     /**
      * Determines whether this game is an invitation to the user.
+     *
      * @param userEmail the logged-in user's email.
      * @return whether the user is invited to this game.
      */
@@ -122,6 +128,7 @@ public class GameSummary {
     /**
      * Determines whether the user is currently involved in this game.
      * For a game to be ongoing, it must not be over and the user must have accepted their invitation to it.
+     *
      * @param userEmail the logged-in user's email.
      * @return whether this game is ongoing for the user.
      */
@@ -131,15 +138,20 @@ public class GameSummary {
         for (JsonElement i : players) {
             if (userEmail.equals(i.getAsJsonObject().get("email").getAsString())) {
                 ongoing = i.getAsJsonObject().get("state").getAsString();
-                if (ongoing.equals("2")) {
-                    return true;
-                } else if (ongoing.equals("3")) {
-                    return true;
+                String gameState = info.get("state").getAsString();
+                if (gameState.equals("0") || gameState.equals("1")) {
+                    if (ongoing.equals("0")) {
+                        return false;
+                    } else if (ongoing.equals("1")) {
+                        return false;
+                    } else if (ongoing.equals("2")) {
+                        return true;
+                    } else if (ongoing.equals("3")) {
+                        return true;
+                    }
                 }
             }
         }
         return false;
     }
 }
-
-
