@@ -165,22 +165,6 @@ public class Checkpoint3Test {
     @Graded(points = 15)
     @SuppressWarnings({"JavaReflectionMemberAccess", "ConstantConditions"})
     public void testLatLngRefactor() throws Throwable {
-        // Ban the use of the two independent arrays from Checkpoint 0
-        try {
-            Class<?> defaultTargetsClass = Class.forName("edu.illinois.cs.cs125.spring2020.mp.logic.DefaultTargets");
-            defaultTargetsClass.getMethod("disableIndependentArrays").invoke(null);
-        } catch (ClassNotFoundException e) {
-            // Ignored - DefaultTargets can be deleted in Checkpoint 4
-        }
-        for (Field f : GameActivity.class.getDeclaredFields()) {
-            if (!f.getType().isArray()) continue;
-            Class<?> componentType = f.getType();
-            while (componentType.isArray()) componentType = componentType.getComponentType();
-            if (componentType.equals(double.class) || componentType.equals(float.class)) {
-                Assert.fail("GameActivity should no longer use independent coordinate arrays: found " + f.toString());
-            }
-        }
-
         // Make sure addLine was refactored or removed
         try {
             GameActivity.class.getMethod("addLine", double.class, double.class, double.class, double.class, int.class);
