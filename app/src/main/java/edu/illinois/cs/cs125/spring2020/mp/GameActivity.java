@@ -38,6 +38,7 @@ import java.util.List;
 
 import edu.illinois.cs.cs125.spring2020.mp.logic.AreaDivider;
 import edu.illinois.cs.cs125.spring2020.mp.logic.DefaultTargets;
+import edu.illinois.cs.cs125.spring2020.mp.logic.GameSummary;
 import edu.illinois.cs.cs125.spring2020.mp.logic.LatLngUtils;
 import edu.illinois.cs.cs125.spring2020.mp.logic.TargetVisitChecker;
 
@@ -166,8 +167,6 @@ public final class GameActivity extends AppCompatActivity {
      * .
      */
     private int lastCapturedY;
-
-
     /**
      * Called by the Android system when the activity is to be set up.
      * <p>

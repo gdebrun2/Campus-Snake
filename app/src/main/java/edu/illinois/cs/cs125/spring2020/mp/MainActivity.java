@@ -1,5 +1,6 @@
 package edu.illinois.cs.cs125.spring2020.mp;
 
+import android.content.Context;
 import android.content.Intent;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,10 +11,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+
 
 import edu.illinois.cs.cs125.spring2020.mp.logic.GameSummary;
 import edu.illinois.cs.cs125.spring2020.mp.logic.WebApi;
@@ -22,10 +25,12 @@ import edu.illinois.cs.cs125.spring2020.mp.logic.WebApi;
  * Represents the main screen of the app, where the user can view and enter games.
  */
 public final class MainActivity extends AppCompatActivity {
-
     /**
      * Called by the Android system when the activity is to be set up.
      * @param savedInstanceState info from the previously terminated instance (unused)
+     */
+    /**
+     * intent.
      */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -84,11 +89,13 @@ public final class MainActivity extends AppCompatActivity {
         invitationsLayout.removeAllViews();
         LinearLayout ongoingLayout = findViewById(R.id.ongoingGamesList);
         ongoingLayout.removeAllViews();
+        Context y = this;
 
         String myEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
         JsonArray games = result.getAsJsonArray("games");
         for (JsonElement g : games) {
             JsonObject game = g.getAsJsonObject();
+            Intent x = new Intent(this, GameActivity.class);
 
             // Extract game information from the JSON using GameSummary
             GameSummary summary = new GameSummary(game);
@@ -96,6 +103,7 @@ public final class MainActivity extends AppCompatActivity {
             String gameMode = summary.getMode();
             String gameOwner = summary.getOwner();
             String myRole = summary.getPlayerRole(myEmail, this);
+            x.putExtra("game", gameId);
 
             // Create the chunk according to the kind of game
             View chunk;
@@ -106,7 +114,27 @@ public final class MainActivity extends AppCompatActivity {
                 ongoingLayout.addView(chunk);
                 // Get buttons specific to ongoing games
                 Button enter = chunk.findViewById(R.id.enterGame);
+                enter.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(final View v) {
+                        // Change the label's text
+                        enter.setText("Enter.");
+                        startActivity(x);
+                    }
+                });
                 Button leave = chunk.findViewById(R.id.leaveGame);
+                leave.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        // Change the label's text
+                        enter.setText("Leave.");
+                        WebApi.startRequest(y, WebApi.API_BASE + "/games/" + gameId + "/leave",
+                                Request.Method.POST, null, response -> {
+                                    connect();
+                                }, error -> { }
+                        );
+                    }
+                });
                 // The Leave button should be gone if the user owns the game
                 if (gameOwner.equals(myEmail)) {
                     leave.setVisibility(View.GONE);
@@ -120,6 +148,33 @@ public final class MainActivity extends AppCompatActivity {
                 // Add it to the invitations list
                 invitationsLayout.addView(chunk);
                 // Get buttons specific to invitations?
+                Button decline = chunk.findViewById(R.id.declineInvite);
+                decline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        decline.setText("Decline.");
+                        WebApi.startRequest(y, WebApi.API_BASE + "/games/" + gameId + "/decline",
+                                Request.Method.POST, null, response -> {
+                            // response code handler similar to a GET request
+                                    connect();
+                            }, error -> { }
+                        );
+                    }
+                });
+                Button accept = chunk.findViewById(R.id.acceptInvite);
+                accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(final View v) {
+                        // Change the label's text
+                        accept.setText("Accept.");
+                        WebApi.startRequest(y, WebApi.API_BASE + "/games/" + gameId + "/accept",
+                                Request.Method.POST, null, response -> {
+                                    // response code handler similar to a GET request
+                                    connect();
+                                }, error -> { }
+                        );
+                    }
+                });
             } else {
                 // Avoid the label-setting code below, since no chunk was created
                 continue;

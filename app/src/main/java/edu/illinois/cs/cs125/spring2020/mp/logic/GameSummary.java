@@ -42,8 +42,8 @@ public class GameSummary {
 
     public java.lang.String getId() {
 
-        String id = info.get("id").getAsString();
-        return id;
+        String gameId = info.get("id").getAsString();
+        return gameId;
 
     }
 
