@@ -38,7 +38,6 @@ import java.util.List;
 
 import edu.illinois.cs.cs125.spring2020.mp.logic.AreaDivider;
 import edu.illinois.cs.cs125.spring2020.mp.logic.DefaultTargets;
-import edu.illinois.cs.cs125.spring2020.mp.logic.GameSummary;
 import edu.illinois.cs.cs125.spring2020.mp.logic.LatLngUtils;
 import edu.illinois.cs.cs125.spring2020.mp.logic.TargetVisitChecker;
 
