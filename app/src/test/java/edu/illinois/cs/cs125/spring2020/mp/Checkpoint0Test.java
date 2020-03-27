@@ -539,6 +539,8 @@ public class Checkpoint0Test {
                 Assert.assertEquals(linesCrossFail, test.get("answer").getAsBoolean(), linesCross.invoke(
                         null, startLat1, startLng1, endLat1, endLng1, startLat2, startLng2, endLat2, endLng2));
             }
+        } catch (NoSuchMethodException e) {
+            // Ignore - the signature of linesCross is changed in Checkpoint 3
         } catch (InvocationTargetException e) {
             throw e.getCause();
         }
