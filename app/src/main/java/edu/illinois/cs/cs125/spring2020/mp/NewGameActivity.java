@@ -69,11 +69,9 @@ public final class NewGameActivity extends AppCompatActivity {
             // Your code here: make only the selected mode's settings group visible
             if (checkedId == R.id.areaModeOption) {
                 findViewById(R.id.areaSettings).setVisibility(View.VISIBLE);
-                findViewById(R.id.targetModeOption).setVisibility(View.GONE);
                 findViewById(R.id.targetSettings).setVisibility(View.GONE);
             } else if (checkedId == R.id.targetModeOption) {
                 findViewById(R.id.targetSettings).setVisibility(View.VISIBLE);
-                findViewById(R.id.areaModeOption).setVisibility(View.GONE);
                 findViewById(R.id.areaSettings).setVisibility(View.GONE);
             }
 
