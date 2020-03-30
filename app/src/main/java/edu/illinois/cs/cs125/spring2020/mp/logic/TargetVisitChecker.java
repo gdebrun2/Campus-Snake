@@ -15,6 +15,8 @@ package edu.illinois.cs.cs125.spring2020.mp.logic;
  * on to GameActivity to make the game work!
  */
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Holds methods for managing a path of target claims.
  * <p>
@@ -166,9 +168,11 @@ public class TargetVisitChecker {
             finalindex += 1;
         }
         for (int index = 0; index < finalindex - 1; index++) {
-            if (LineCrossDetector.linesCross(latitudes[path[finalindex - 1]], longitudes[path[finalindex - 1]],
-                    latitudes[tryVisit], longitudes[tryVisit], latitudes[path[index]],
-                    longitudes[path[index]], latitudes[path[index + 1]], longitudes[path[index + 1]]) == true) {
+            LatLng finalMinusOne = new LatLng(latitudes[path[finalindex - 1]], longitudes[path[finalindex - 1]]);
+            LatLng atTryVisit = new LatLng(latitudes[tryVisit], longitudes[tryVisit]);
+            LatLng atIndex = new LatLng(latitudes[path[index]], longitudes[path[index]]);
+            LatLng atIndexPlusOne = new LatLng(latitudes[path[index + 1]], longitudes[path[index + 1]]);
+            if (LineCrossDetector.linesCross(finalMinusOne, atTryVisit, atIndex, atIndexPlusOne)) {
                 return false;
             }
         }

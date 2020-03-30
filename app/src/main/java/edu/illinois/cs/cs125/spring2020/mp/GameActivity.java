@@ -338,8 +338,9 @@ public final class GameActivity extends AppCompatActivity {
                 if (TargetVisitChecker.checkSnakeRule(targetLats, targetLngs, path, targetCandidate)) {
                     TargetVisitChecker.visitTarget(path, targetCandidate);
                     changeMarkerColor(targetLats[targetCandidate], targetLngs[targetCandidate], CAPTURED_MARKER_HUE);
-                    addLine(targetLats[path[finalindex]], targetLngs[path[finalindex]], targetLats[targetCandidate],
-                            targetLngs[targetCandidate], PLAYER_COLOR);
+                    LatLng atFinalIndex = new LatLng(targetLats[path[finalindex]], targetLngs[path[finalindex]]);
+                    LatLng atTargetCandidate = new LatLng(targetLats[targetCandidate], targetLngs[targetCandidate]);
+                    addLine(atFinalIndex, atTargetCandidate, PLAYER_COLOR);
                 }
             } else if (targetCandidate != -1) {
                 TargetVisitChecker.visitTarget(path, targetCandidate);
@@ -406,19 +407,12 @@ public final class GameActivity extends AppCompatActivity {
 
     /**
      * Adds a colored line to the Google map.
-     * @param startLat the latitude of one endpoint of the line
-     * @param startLng the longitude of that endpoint
-     * @param endLat the latitude of the other endpoint of the line
-     * @param endLng the longitude of that other endpoint
+     * @param start the latitude and longitude of one endpoint of the line
+     * @param end the latitude and longitude of the other endpoint of the line
      * @param color the color to fill the line with
      */
     @VisibleForTesting
-    public void addLine(final double startLat, final double startLng,
-                        final double endLat, final double endLng, final int color) {
-        // Package the loose coordinates into LatLng objects usable by Google Maps
-        LatLng start = new LatLng(startLat, startLng);
-        LatLng end = new LatLng(endLat, endLng);
-
+    public void addLine(final LatLng start, final LatLng end, final int color) {
         // Configure and add a colored line
         final int lineThickness = 12;
         PolylineOptions fill = new PolylineOptions().add(start, end).color(color).width(lineThickness).zIndex(1);
