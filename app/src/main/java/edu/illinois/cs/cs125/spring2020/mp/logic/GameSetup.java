@@ -61,7 +61,7 @@ public class GameSetup {
                                                         final java.util.List<com.google.android.gms.maps.model.LatLng>
                                                                 targets,
                                                         final int proximityThreshold) {
-        if (targets.size() != 0 && invitees.size() != 0) {
+        if (targets.size() != 0 && invitees.size() != 0 && proximityThreshold > 0) {
             JsonObject gameInformation = new JsonObject();
             gameInformation.addProperty("mode", "target");
             gameInformation.addProperty("proximityThreshold", proximityThreshold);

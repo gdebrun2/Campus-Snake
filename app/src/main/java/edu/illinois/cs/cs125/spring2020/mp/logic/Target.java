@@ -1,5 +1,6 @@
 package edu.illinois.cs.cs125.spring2020.mp.logic;
 
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -27,9 +28,17 @@ public class Target {
      */
     private Marker marker;
     /**
+     * the instance map.
+     */
+    private GoogleMap map;
+    /**
      * the position of the target.
      */
     private LatLng position;
+    /**
+     * the team id.
+     */
+    private int team;
     /**
      * Creates a target in a target-mode game by placing an appropriately colored marker on the map.
      * The marker's hue should reflect the team (if any) currently owning the target.
@@ -41,6 +50,8 @@ public class Target {
     public Target(final com.google.android.gms.maps.GoogleMap setMap,
            final com.google.android.gms.maps.model.LatLng setPosition, final int setTeam) {
         marker = setMap.addMarker(new MarkerOptions().position(setPosition));
+        team = setTeam;
+        map = setMap;
         if (setTeam == TEAM_RED) {
             BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
             marker.setIcon(icon);
@@ -71,15 +82,30 @@ public class Target {
      * @return the owning team ID or OBSERVER if unclaimed
      */
     public int getTeam() {
-        final int bullshitReturn = 4;
-        return bullshitReturn;
+        return this.team;
     }
     /**
      * Updates the owning team of this target and updates the hue of the marker to match.
      * @param newTeam the ID of the team that captured the target
      */
     public void setTeam(final int newTeam) {
-
+        team = newTeam;
+        if (newTeam == TEAM_RED) {
+            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+            marker.setIcon(icon);
+        } else if (newTeam == TEAM_YELLOW) {
+            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW);
+            marker.setIcon(icon);
+        } else if (newTeam == TEAM_GREEN) {
+            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+            marker.setIcon(icon);
+        } else if (newTeam == TEAM_BLUE) {
+            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE);
+            marker.setIcon(icon);
+        } else {
+            BitmapDescriptor icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET);
+            marker.setIcon(icon);
+        }
     }
 
 }
