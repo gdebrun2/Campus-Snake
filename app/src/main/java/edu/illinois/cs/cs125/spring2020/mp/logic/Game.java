@@ -52,7 +52,7 @@ public abstract class Game {
      * @param setContext the Android UI context
      */
     public Game(final String setEmail, final GoogleMap setMap, final WebSocket setWebSocket,
-         final JsonObject initialState, final Context setContext) {
+                final JsonObject initialState, final Context setContext) {
         email = setEmail;
         map = setMap;
         websocket = setWebSocket;
@@ -114,7 +114,7 @@ public abstract class Game {
      */
     @CallSuper
     public void locationUpdated(final LatLng location) {
-        // No-op until Checkpoint 5
+        // No-op unless doing the apocryphal Checkpoint 5
     }
 
     /**
@@ -131,7 +131,8 @@ public abstract class Game {
      * @return the TeamID code of the team with the highest score
      */
     public final int getWinningTeam() {
-        return 0; // For you to implement
+        // For you to implement
+        return 0;
     }
 
     /**

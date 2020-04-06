@@ -37,6 +37,20 @@
     <string name="enter">Enter</string>
     <string name="leave">Leave</string>
     <string name="leave_confirmation">Are you sure you want to leave this game? You will not be able to rejoin.</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="end">End Game</string>
+    <string name="unknown_ws_message">Unknown websocket message type: %s</string>
+    <string name="end_game_confirmation">Are you sure you want to end this game? This cannot be undone.</string>
+    <string name="paused">Paused</string>
+    <string name="running">Running</string>
+    <string name="connecting">Connecting…</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="connection_lost">Connection lost</string>
+    <string name="game_over_message">The game is over: %s wins!</string>
+    <string name="game_over_no_points_message">The game is over. No points were scored.</string>
+    <string name="no_scores">No scores yet</string>
+    <string name="random_walk_detected">Random-walk (GPS problem?) detected: %s</string>
     <string name="notification_text">Tracking location because you\'re in a game</string>
     <string-array name="team_choices">
         <item>Observer</item>
