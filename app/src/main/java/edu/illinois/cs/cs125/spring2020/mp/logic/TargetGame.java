@@ -249,6 +249,7 @@ public final class TargetGame extends Game {
     @Override
     public int getTeamScore(final int teamId) {
         // Find how many targets are currently owned by the specified team
+
         return 0;
     }
 }
