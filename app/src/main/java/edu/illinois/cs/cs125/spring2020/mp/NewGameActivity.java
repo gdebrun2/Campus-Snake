@@ -74,7 +74,6 @@ public final class NewGameActivity extends AppCompatActivity {
                 findViewById(R.id.targetSettings).setVisibility(View.VISIBLE);
                 findViewById(R.id.areaSettings).setVisibility(View.GONE);
             }
-
         });
 
         // Register button click handlers on the add-invitee and create-game buttons
