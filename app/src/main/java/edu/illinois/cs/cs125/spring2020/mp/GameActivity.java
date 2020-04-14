@@ -44,6 +44,10 @@ import edu.illinois.cs.cs125.spring2020.mp.logic.TargetGame;
 import edu.illinois.cs.cs125.spring2020.mp.logic.TeamID;
 import edu.illinois.cs.cs125.spring2020.mp.logic.WebApi;
 
+import static edu.illinois.cs.cs125.spring2020.mp.logic.TeamID.TEAM_BLUE;
+import static edu.illinois.cs.cs125.spring2020.mp.logic.TeamID.TEAM_GREEN;
+import static edu.illinois.cs.cs125.spring2020.mp.logic.TeamID.TEAM_YELLOW;
+
 /**
  * Represents the game activity, where the user plays the game and sees its state.
  */
@@ -236,8 +240,8 @@ public final class GameActivity extends AppCompatActivity {
         JsonObject locUpdate = new JsonObject();
         // You need to fill the object out with the properties of a location update
         locUpdate.addProperty("type", "locationUpdate");
-        locUpdate.addProperty("latitude", location.getLatitude());
-        locUpdate.addProperty("longitude", location.getLatitude());
+        locUpdate.addProperty("latitude", loc.latitude);
+        locUpdate.addProperty("longitude", loc.longitude);
         // Once the object is ready, convert it to a JSON string and send it over the websocket
         webSocket.sendText(locUpdate.toString());
 
@@ -312,6 +316,38 @@ public final class GameActivity extends AppCompatActivity {
                 if (newState != GameStateID.ENDED) {
                     // Since the game isn't over yet, update the scores label
                     updateGameState(newState);
+                } else if (newState == GameStateID.ENDED) {
+                    if (game.getWinningTeam() == 1) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Red wins!");
+                        builder.setNegativeButton("bye", null);
+                        builder.setOnDismissListener(unused -> this.finish());
+                        builder.create().show();
+                    } else if (game.getWinningTeam() == TEAM_YELLOW) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Yellow wins!");
+                        builder.setNegativeButton("bye", null);
+                        builder.setOnDismissListener(unused -> this.finish());
+                        builder.create().show();
+                    } else if (game.getWinningTeam() == TEAM_GREEN) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Green wins!");
+                        builder.setNegativeButton("bye", null);
+                        builder.setOnDismissListener(unused -> this.finish());
+                        builder.create().show();
+                    } else if (game.getWinningTeam() == TEAM_BLUE) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("Blue wins!");
+                        builder.setNegativeButton("bye", null);
+                        builder.setOnDismissListener(unused -> this.finish());
+                        builder.create().show();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setMessage("No winner!");
+                        builder.setNegativeButton("bye", null);
+                        builder.setOnDismissListener(unused -> this.finish());
+                        builder.create().show();
+                    }
                 }
                 // Near the end of the checkpoint, add an else branch to handle the end of the game
                 break;

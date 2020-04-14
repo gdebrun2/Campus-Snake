@@ -177,15 +177,15 @@ public final class TargetGame extends Game {
                 }
             }
         }
+        // Now that we know the target can be captured, update its owning team
+        // Use extendPlayerPath to update the game state and map
+        // Send a targetVisit update to the server
         target.setTeam(getMyTeam());
         extendPlayerPath(getEmail(), id, getMyTeam());
         JsonObject targetUpdate = new JsonObject();
         targetUpdate.addProperty("type", "targetVisit");
         targetUpdate.addProperty("targetId", id);
         sendMessage(targetUpdate);
-        // Now that we know the target can be captured, update its owning team
-        // Use extendPlayerPath to update the game state and map
-        // Send a targetVisit update to the server
     }
 
     /**
@@ -249,7 +249,12 @@ public final class TargetGame extends Game {
     @Override
     public int getTeamScore(final int teamId) {
         // Find how many targets are currently owned by the specified team
-
-        return 0;
+        int count = 0;
+        for (Map.Entry<String, Target> entry : targets.entrySet()) {
+            if (entry.getValue().getTeam() == teamId) {
+                count += 1;
+            }
+        }
+        return count;
     }
 }

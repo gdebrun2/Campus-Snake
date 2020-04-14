@@ -18,6 +18,8 @@ import java.util.Map;
 
 import edu.illinois.cs.cs125.spring2020.mp.R;
 
+import static edu.illinois.cs.cs125.spring2020.mp.logic.TeamID.TEAM_BLUE;
+
 /**
  * Represents a multiplayer game, providing or defining methods common to all game modes.
  * <p>
@@ -132,7 +134,15 @@ public abstract class Game {
      */
     public final int getWinningTeam() {
         // For you to implement
-        return 0;
+        int score = 0;
+        int winningTeam = 0;
+        for (int i = 1; i <= TEAM_BLUE; i++) {
+            if (getTeamScore(i) > score) {
+                score = getTeamScore(i);
+                winningTeam = i;
+            }
+        }
+        return winningTeam;
     }
 
     /**
